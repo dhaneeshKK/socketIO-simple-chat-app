@@ -1,6 +1,7 @@
 // Make connection
 let socket;
-socket = io.connect("http://localhost:3000");
+//socket = io.connect("http://localhost:3000");
+socket = io.connect("https://socket-chat-chi.vercel.app/");
 
 // Query DOM
 const message = document.getElementById("message"),
