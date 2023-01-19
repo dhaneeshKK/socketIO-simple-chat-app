@@ -32,4 +32,9 @@ io.on("connection", (socket) => {
 		// console.log(data);
 		io.sockets.emit("chat", data);
 	});
+
+	// Handle typing event
+	socket.on("typing", function (data) {
+		socket.broadcast.emit("typing", data);
+	});
 });
