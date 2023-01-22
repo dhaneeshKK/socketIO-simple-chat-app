@@ -24,18 +24,42 @@ const io = new Server(serverHttp, {
 	},
 });
 
+const roomList = [];
 io.on("connection", (socket) => {
 	console.log("made socket connection", socket.id);
 
+	// Create room array
+
+	socket.on("join", function (data) {
+		console.log(data);
+		const fromId = data.clientId + data.handle;
+		if (!roomList.find((val) => val === fromId)) {
+			roomList.push(fromId);
+		}
+		console.log(roomList);
+	});
+
 	// Handle chat event
 	socket.on("chat", function (data) {
-		console.log(data);
+		console.log(roomList);
+
+		roomList.forEach((element) => {
+			if (element.match(data.chatBuddy)) {
+				console.log(`message to be send to ${data.chatBuddy}`);
+				const roomToSend = element.replace(`${data.chatBuddy}`, "");
+				console.log(roomToSend);
+			}
+		});
+
+		//if (roomList.includes(data.chatBuddy)) {
+		//	console.log(`message to be send to ${data.chatBuddy}`);
+		//} else "to not found";
+		//const exists = arr.some((t) => stringInput.includes(t));
 		io.sockets.emit("chat", data);
 	});
 
 	// Handle typing event
 	socket.on("typing", function (data) {
-		console.log(data);
 		socket.broadcast.emit("typing", data);
 	});
 });

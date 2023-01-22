@@ -1,20 +1,41 @@
 // Make connection
 let socket;
-//socket = io.connect("http://localhost:3000");
-socket = io.connect("https://socket-chat-chi.vercel.app/");
+socket = io.connect("http://localhost:3000");
+
+socket.on("connect", () => {
+	output.innerHTML += `${socket.id}`;
+	console.log(`${socket.id}`);
+});
 
 // Query DOM
 const message = document.getElementById("message"),
 	handle = document.getElementById("handle"),
 	btn = document.getElementById("send"),
+	btnJoin = document.getElementById("join"),
 	output = document.getElementById("output"),
-	feedback = document.getElementById("feedback");
+	feedback = document.getElementById("feedback"),
+	chatBuddy = document.getElementById("to");
+
+//const roomId = handle.value + `${socket.id}`;
+//console.log(`${socket.id}`);
+//socket.emit("join-private", roomId);
 
 // Emit events
+
+btnJoin.addEventListener("click", function () {
+	socket.emit("join", {
+		handle: handle.value,
+		chatBuddy: to.value,
+		clientId: socket.id,
+	});
+});
+
 btn.addEventListener("click", function () {
 	socket.emit("chat", {
 		message: message.value,
 		handle: handle.value,
+		chatBuddy: to.value,
+		clientId: socket.id,
 	});
 	message.value = "";
 });
