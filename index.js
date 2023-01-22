@@ -48,14 +48,12 @@ io.on("connection", (socket) => {
 				console.log(`message to be send to ${data.chatBuddy}`);
 				const roomToSend = element.replace(`${data.chatBuddy}`, "");
 				console.log(roomToSend);
+				socket.to(roomToSend).emit("chat", data);
 			}
 		});
+		//socket.to(roomToSend).emit("chat", data);
 
-		//if (roomList.includes(data.chatBuddy)) {
-		//	console.log(`message to be send to ${data.chatBuddy}`);
-		//} else "to not found";
-		//const exists = arr.some((t) => stringInput.includes(t));
-		io.sockets.emit("chat", data);
+		//io.sockets.emit("chat", data);
 	});
 
 	// Handle typing event
