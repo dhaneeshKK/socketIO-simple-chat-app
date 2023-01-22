@@ -29,14 +29,11 @@ io.on("connection", (socket) => {
 	console.log("made socket connection", socket.id);
 
 	// Create room array
-
 	socket.on("join", function (data) {
-		console.log(data);
 		const fromId = data.clientId + data.handle;
 		if (!roomList.find((val) => val === fromId)) {
 			roomList.push(fromId);
 		}
-		console.log(roomList);
 	});
 
 	// Handle chat event
@@ -45,19 +42,21 @@ io.on("connection", (socket) => {
 
 		roomList.forEach((element) => {
 			if (element.match(data.chatBuddy)) {
-				console.log(`message to be send to ${data.chatBuddy}`);
 				const roomToSend = element.replace(`${data.chatBuddy}`, "");
-				console.log(roomToSend);
 				socket.to(roomToSend).emit("chat", data);
 			}
 		});
-		//socket.to(roomToSend).emit("chat", data);
-
+		//To send to all clients
 		//io.sockets.emit("chat", data);
 	});
 
 	// Handle typing event
 	socket.on("typing", function (data) {
-		socket.broadcast.emit("typing", data);
+		roomList.forEach((element) => {
+			if (element.match(data.chatBuddy)) {
+				const roomToSend = element.replace(`${data.chatBuddy}`, "");
+				socket.to(roomToSend).emit("typing", data);
+			}
+		});
 	});
 });
